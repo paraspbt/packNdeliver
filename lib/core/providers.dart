@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:pack_n_deliver/constants/appwrite_constants.dart';
 
 final appwriteClientProvider = Provider((ref) {
@@ -15,4 +16,11 @@ final appwriteDatabaseProvider = Provider((ref) {
   return Databases(client);
 });
 
-final authStateProvider = StateProvider<bool>((ref) => false);
+final appwriteFunctionsProvider = Provider((ref) {
+  final client = ref.read(appwriteClientProvider);
+  return Functions(client);
+});
+
+final httpClientProvider = Provider<http.Client>((ref) {
+  return http.Client();
+});

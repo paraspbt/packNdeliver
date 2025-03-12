@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pack_n_deliver/core/providers.dart';
-import 'package:pack_n_deliver/features/dashboard/view/dashboard_page.dart';
-import 'package:pack_n_deliver/features/login/view/log_in_page.dart';
+import 'package:pack_n_deliver/controller/log_in_controller.dart';
+import 'package:pack_n_deliver/view/dashboard_page.dart';
+import 'package:pack_n_deliver/view/log_in_page.dart';
 import 'package:pack_n_deliver/router/route_constants.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {

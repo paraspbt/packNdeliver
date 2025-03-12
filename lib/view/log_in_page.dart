@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pack_n_deliver/commons/app_button.dart';
 import 'package:pack_n_deliver/commons/input_field.dart';
-import 'package:pack_n_deliver/features/login/controller/log_in_controller.dart';
+import 'package:pack_n_deliver/controller/log_in_controller.dart';
 
 class LogInPage extends ConsumerStatefulWidget {
   const LogInPage({super.key});
@@ -27,7 +27,6 @@ class _LogInPageState extends ConsumerState<LogInPage> {
     ref.read(loginControllerProvider.notifier).login(
           password: passwordController.text,
           context: context,
-          ref: ref,
         );
   }
 

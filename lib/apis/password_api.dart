@@ -26,18 +26,17 @@ class PasswordApi {
         return right(response.data['value'] as String);
       } else {
         return left(
-          Failure('Password field missing in document', StackTrace.current),
+          const Failure('Password field missing in document'),
         );
       }
-    } on AppwriteException catch (e, stackTrace) {
+    } on AppwriteException catch (e) {
       if (e.code == 404) {
-        print(e.toString());
         return left(Failure(
-            'Password document not found : ${e.toString()}', stackTrace));
+            'Password document not found : ${e.toString()}'));
       }
-      return left(Failure(e.message ?? 'Unknown Appwrite error', stackTrace));
-    } catch (e, stackTrace) {
-      return left(Failure('Unexpected error: $e', stackTrace));
+      return left(Failure(e.message ?? 'Unknown Appwrite error'));
+    } catch (e) {
+      return left(Failure('Unexpected error: $e'));
     }
   }
 }
