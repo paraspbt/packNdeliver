@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pack_n_deliver/apis/website_api.dart';
 import 'package:pack_n_deliver/apis/get_session_api.dart';
 import 'package:pack_n_deliver/apis/password_api.dart';
 import 'package:pack_n_deliver/commons/dialog.dart';
@@ -63,6 +64,7 @@ class LogInController extends StateNotifier<bool> {
                 context, 'Error', 'Failed to get Session Data: ${l.message}');
           }, (r) {
             _ref.read(sessionStateProvider.notifier).update(r);
+            _ref.read(websiteApiProvider).getOrdersData();
             _ref.read(authStateProvider.notifier).update((state) => true);
             context.goNamed(RouteConstants.dashboard);
           });

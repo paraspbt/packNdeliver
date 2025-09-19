@@ -3,6 +3,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pack_n_deliver/commons/extractor.dart';
 import 'package:pack_n_deliver/core/core.dart';
 import 'package:pack_n_deliver/core/providers.dart';
@@ -38,13 +39,13 @@ class GetSessionApi {
   Future<Map<String, String>> _getSession() async {
     try {
       final Map<String, dynamic> payload = {
-        "url": "https://c2csupermarket.vasyerp.com/login",
+        "url": dotenv.env['LOGIN_URL'],
         "method": "GET",
         "headers": {},
         "body": null
       };
       final Execution response = await _functions.createExecution(
-        functionId: 'proxy-server',
+        functionId: dotenv.env['FUNCTION_ID']!,
         body: jsonEncode(payload),
       );
       final Map<String, dynamic> res = jsonDecode(response.responseBody);
@@ -70,20 +71,26 @@ class GetSessionApi {
 
   Future<void> _postLogin(String session, String csrf) async {
     try {
-      final String body = 'return=&hostName=c2csupermarket.vasyerp.com'
+      final String body = 'return='
+          '&hostName=${dotenv.env['HOST_NAME']}'
           '&_csrf=${Uri.encodeQueryComponent(csrf)}'
-          '&userName=Rider1'
-          '&password=Riderpass@1'
+          '&userName=${dotenv.env['USERNAME']}'
+          '&password=${Uri.encodeQueryComponent(dotenv.env['PASSWORD']!)}'
           '&otpCheck=';
       final Map<String, dynamic> payload = {
-        "url": "https://c2csupermarket.vasyerp.com/login",
+        "url": dotenv.env['LOGIN_URL'],
         "method": "POST",
-        "headers": {'Cookie': 'SESSION=$session'},
+        "headers": {
+          'Cookie': 'SESSION=$session',
+          'Accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
         "body": body,
         "allowRedirect": false,
       };
       final Execution response = await _functions.createExecution(
-        functionId: 'proxy-server',
+        functionId: dotenv.env['FUNCTION_ID']!,
         body: jsonEncode(payload),
       );
       final Map<String, dynamic> res = jsonDecode(response.responseBody);
@@ -103,14 +110,18 @@ class GetSessionApi {
   Future<String> _getReactToken(String session) async {
     try {
       final Map<String, dynamic> payload = {
-        "url": "https://c2csupermarket.vasyerp.com/success",
+        "url": dotenv.env['SUCCESS_URL'],
         "method": "GET",
-        "headers": {'Cookie': 'SESSION=$session'},
+        "headers": {
+          'Cookie': 'SESSION=$session',
+          'Accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        },
         "body": null,
         "allowRedirect": false,
       };
       final Execution response = await _functions.createExecution(
-        functionId: 'proxy-server',
+        functionId: dotenv.env['FUNCTION_ID']!,
         body: jsonEncode(payload),
       );
       final Map<String, dynamic> res = jsonDecode(response.responseBody);
@@ -134,14 +145,18 @@ class GetSessionApi {
   Future<String> _getCsrfToken(String session, String reactToken) async {
     try {
       final Map<String, dynamic> payload = {
-        "url": "https://c2csupermarket.vasyerp.com/report/pos/online",
+        "url": dotenv.env['REPORT_URL'],
         "method": "GET",
-        "headers": {'Cookie': 'SESSION=$session; react-token=$reactToken'},
+        "headers": {
+          'Cookie': 'SESSION=$session; react-token=$reactToken',
+          'Accept':
+              'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        },
         "body": null,
         "allowRedirect": false,
       };
       final Execution response = await _functions.createExecution(
-        functionId: 'proxy-server',
+        functionId: dotenv.env['FUNCTION_ID']!,
         body: jsonEncode(payload),
       );
       final Map<String, dynamic> res = jsonDecode(response.responseBody);

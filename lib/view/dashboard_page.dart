@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pack_n_deliver/controller/log_in_controller.dart';
+import 'package:pack_n_deliver/commons/order_list_widget.dart';
+import 'package:pack_n_deliver/constants/order_status_enum.dart';
+import 'package:pack_n_deliver/controller/website_controller.dart';
+import 'package:pack_n_deliver/theme/app_pallete.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   static route() =>
@@ -14,17 +17,59 @@ class DashboardPage extends ConsumerStatefulWidget {
 class _DashboardPageState extends ConsumerState<DashboardPage> {
   @override
   Widget build(BuildContext context) {
-    final sessionData = ref.read(sessionStateProvider);
+    final isLoading = ref.watch(websiteControllerProvider);
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            Text('Session: ${sessionData.session}'),
-            Text('ReactToken: ${sessionData.reactToken}'),
-            Text('Csrf: ${sessionData.csrf}'),
-          ],
-        ),
+      appBar: AppBar(
+        title: Text('Dashboard'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              ref.invalidate(orderListProvider);
+            },
+          ),
+        ],
       ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ref.watch(orderListProvider).when(
+                skipLoadingOnRefresh: false,
+                data: (orderLists) {
+                  return Row(
+                    children: [
+                      Expanded(
+                          child: OrderListWidget(
+                        title: 'New Orders',
+                        orders: orderLists[OrderStatus.pending]!,
+                        dashcontext: context,
+                      )),
+                      const VerticalDivider(
+                        color: AppPallete.darkGreen,
+                        thickness: 2,
+                      ),
+                      Expanded(
+                          child: OrderListWidget(
+                        title: 'Packing',
+                        orders: orderLists[OrderStatus.inprogress]!,
+                        dashcontext: context,
+                      )),
+                      const VerticalDivider(
+                        color: AppPallete.darkGreen,
+                        thickness: 2,
+                      ),
+                      Expanded(
+                          child: OrderListWidget(
+                        title: 'Out for Delivery',
+                        orders: orderLists[OrderStatus.out]!,
+                        dashcontext: context,
+                      )),
+                    ],
+                  );
+                },
+                error: (error, stackTrace) =>
+                    Center(child: Text('Failed to load orders: $error')),
+                loading: () => const Center(child: CircularProgressIndicator()),
+              ),
     );
   }
 }
